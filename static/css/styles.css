@@ -1,0 +1,207 @@
+/* styles.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-size: 400% 400%;
+    animation: gradientFlow 10s ease infinite;
+    transition: background-color 0.6s ease-in-out;
+}
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.intro-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeOut 2s ease 2.5s forwards;
+}
+.platform-title {
+    font-size: 3rem;
+    color: #ff9a9e;
+    font-family: 'Orbitron', sans-serif;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0.2; transform: scale(1); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
+}
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9998;
+}
+.modal-content {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+}
+.auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+.auth-btn {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: white;
+    box-shadow: 0 0 10px rgba(0,255,255,0.4);
+}
+.auth-btn.guest {
+    background: linear-gradient(135deg, #ff758c, #dc7aa5);
+}
+.auth-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fefefe;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 10px 0;
+    font-family: 'Orbitron', sans-serif;
+    z-index: 999;  /* 确保它位于其他内容的上层 */
+}
+
+.top-bar h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #666;
+    text-transform: uppercase;
+}
+
+#mainContent {
+    padding-bottom: 70px;
+    margin-top: 60px;
+}
+.chat-window {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.message {
+    max-width: 70%;
+    padding: 0.6rem 1rem;
+    border-radius: 1rem;
+    position: relative;
+    word-break: break-word;
+}
+.user {
+    align-self: flex-end;
+    background: #dcf8c6;
+    margin-right: 1rem;
+}
+.ai {
+    align-self: flex-start;
+    background: #fff;
+    margin-left: 1rem;
+}
+.input-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    padding: 10px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    box-sizing: border-box;
+}
+.input-bar input {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 2rem;
+    margin-right: 0.5rem;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+.input-bar button {
+    padding: 0 1rem;
+    border: none;
+    background: #128c7e;
+    color: #fff;
+    border-radius: 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+.input-bar button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+.feedback-buttons {
+margin-top: 8px;
+text-align: left;
+font-family: 'Arial', sans-serif;
+}
+
+.feedback-prompt {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.feedback-buttons-group {
+    display: flex;
+    gap: 10px;
+}
+
+.feedback-btn {
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.feedback-btn:hover {
+    transform: scale(1.2);
+    filter: brightness(1.2);
+}
+
+.feedback-btn:active {
+    transform: scale(0.95);
+}

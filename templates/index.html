@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="{{ url_for('static', filename='images/favicon-32x32.png') }}" type="image/png">
+  <title>Emotion Chat</title>
+  <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body>
+    <div id="intro" class="intro-screen">
+            <h1 class="platform-title">🧠Emotion Flow</h1>
+    </div>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2>Welcome to EmotionFlow</h2>
+            <div class="auth-buttons">
+                <button id="guestBtn" class="auth-btn guest">Continue as Guest</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="top-bar">
+        <h1>🧠Emotion Flow</h1>
+    </div>
+
+    <div id="mainContent" style="display: none;"> 
+        <div class="chat-window" id="chatWindow">
+            <div class="message ai">
+                <div>Hello! How are you feeling today? 😊</div>
+            </div>
+        </div>
+        <form class="input-bar" id="chatForm">
+            <input type="text" id="userInput" placeholder="Type your feeling..." autocomplete="off" required />
+            <button type="submit" id="sendBtn">Send</button>
+        </form>
+    </div>
+
+    <script src="../static/js/script.js"></script>
+
+</body>
+</html>
