@@ -12,7 +12,7 @@ import urllib.parse
 app = Flask(__name__)
 app.secret_key = "super-secret-key-12345"
 
-mongo_client = MongoClient("mongodb://localhost:27017/")
+mongo_client = MongoClient("mongodb+srv://yuniwu:NpCOR24HEnxdnVpX@cluster0.sdsbxna.mongodb.net/")
 db = mongo_client["emotion_platform"]
 collection = db["user_inputs"]
 text_feedback_collection = db["text_feedbacks"]
@@ -135,8 +135,3 @@ def callback():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-
-
-
