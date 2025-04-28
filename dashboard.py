@@ -13,9 +13,10 @@ app = dash.Dash(__name__, external_stylesheets=[
         dbc.themes.CYBORG,
         "https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap"
     ])
+server = app.server
 app.title = "Emotion Trend Dashboard"
 
-mongo_client = MongoClient("mongodb://localhost:27017/")
+mongo_client = MongoClient("mongodb+srv://yuniwu:NpCOR24HEnxdnVpX@cluster0.sdsbxna.mongodb.net/")
 db = mongo_client["emotion_platform"]
 user_collection = db["user_inputs"]
 text_feedback_collection = db["text_feedbacks"]
