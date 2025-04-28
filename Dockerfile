@@ -4,7 +4,7 @@ FROM python:3.10-slim
 # Set working directory
 WORKDIR /app
 
-# Upgrade pip (可選但推薦)
+# Upgrade pip
 RUN pip install --upgrade pip
 
 # Install dependencies
