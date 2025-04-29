@@ -37,18 +37,23 @@ def get_credentials():
     :return: A dictionary containing MongoDB and Gemini API keys
     """
     # Your Google Cloud project ID
-    project_id = 'the-mesh-458219-a9'
+    # project_id = 'the-mesh-458219-a9'
 
     # Path to your service account JSON file
-    key_path = '/tmp/credentials.json'
+    # key_path = '/tmp/credentials.json'
+
+    load_dotenv()
+    mongo_secret_value = os.getenv("MONGODB_URI")
+    gemini_secret_value = os.getenv("GEMINI_API_KEY")
+
 
     # Fetch MongoDB key
-    mongo_secret_name = 'MONGODB_URI'
-    mongo_secret_value = get_secret_value(mongo_secret_name, project_id, key_path=key_path)
+    # mongo_secret_name = 'MONGODB_URI'
+    # mongo_secret_value = get_secret_value(mongo_secret_name, project_id, key_path=key_path)
 
     # Fetch Gemini API key
-    gemini_secret_name = 'GEMINI_API_KEY'
-    gemini_secret_value = get_secret_value(gemini_secret_name, project_id, key_path=key_path)
+    # gemini_secret_name = 'GEMINI_API_KEY'
+    # gemini_secret_value = get_secret_value(gemini_secret_name, project_id, key_path=key_path)
 
     # Return the keys as a dictionary
     return {
