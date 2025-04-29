@@ -15,7 +15,7 @@ def get_secret_value(secret_name: str, project_id: str, secret_version: str = "l
     :return: The value of the secret as a string
     """
     # Load the service account credentials
-    credentials = service_account.Credentials.from_service_account_file(key_path)
+    credentials = service_account.Credentials.from_service_account_file("/secrets/credentials/emotion-flow-credentials")
 
     # Create the Secret Manager client
     client = secretmanager.SecretManagerServiceClient(credentials=credentials)
