@@ -1,6 +1,4 @@
 # recommender.py
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
 import google.generativeai as genai
 from dotenv import load_dotenv
 
