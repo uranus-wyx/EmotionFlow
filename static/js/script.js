@@ -8,6 +8,24 @@ function showAuthModal() {
     document.getElementById("authModal").style.display = "flex";
 }
 
+function toggleDropdown() {
+    const dropdown = document.getElementById("dropdownContent");
+    if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+    } else {
+        dropdown.style.display = "block";
+    }
+}
+
+window.onclick = function(event) {
+    if (!event.target.matches('.hamburger') && !event.target.closest('.hamburger')) {
+        const dropdown = document.getElementById("dropdownContent");
+        if (dropdown.style.display === "block") {
+            dropdown.style.display = "none";
+        }
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const guestBtn = document.getElementById("guestBtn");
     if (guestBtn) {
