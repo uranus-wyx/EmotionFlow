@@ -1,7 +1,7 @@
 from google.cloud import secretmanager
 from google.oauth2 import service_account
 import json
-from google.oauth2 import service_account
+from dotenv import load_dotenv
 
 
 def get_secret_value(secret_name: str, project_id: str, secret_version: str = "latest", key_path: str = '/path/to/your/service-account-file.json'):
