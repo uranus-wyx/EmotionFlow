@@ -19,6 +19,4 @@ def generate_color(emotion = None):
     color = response.text.strip()
 
     return color
-
-color = generate_color('sad')
-print(color)
+    
