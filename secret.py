@@ -1,6 +1,8 @@
 from google.cloud import secretmanager
 from google.oauth2 import service_account
 import json
+from google.oauth2 import service_account
+
 
 def get_secret_value(secret_name: str, project_id: str, secret_version: str = "latest", key_path: str = '/path/to/your/service-account-file.json'):
     """
@@ -38,7 +40,7 @@ def get_credentials():
     project_id = 'the-mesh-458219-a9'
 
     # Path to your service account JSON file
-    key_path = './credentials.json'
+    key_path = '/tmp/credentials.json'
 
     # Fetch MongoDB key
     mongo_secret_name = 'MONGODB_URI'
