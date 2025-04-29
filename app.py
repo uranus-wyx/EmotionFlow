@@ -1,28 +1,24 @@
 ### app.py
-# Core Libraries
 from datetime import datetime, timezone
 import uuid
 import json
 import urllib.parse
-
-# Flask and Web Framework
 from flask import Flask, render_template, request, jsonify, session
-
-# Database
 from pymongo import MongoClient
-
-# App Modules
 from classifier import classify_emotion_gemini
 from responder import generate_response_gemini
 from recommender import generate_music_recommendation
 from bg_color import generate_color
 from dashboard import create_dashboard
-from config import MONGODB_URI, SECRET_KEY
+from secret import get_credentials
 
 app = Flask(__name__)
-app.secret_key = SECRET_KEY
+app.secret_key = "super-secret-key-12345"
 
-mongo_client = MongoClient(MONGODB_URI)
+credentials = get_credentials()
+mongo_db_key = credentials['mongo_db_key']
+
+mongo_client = MongoClient(mongo_db_key)
 db = mongo_client["emotion_platform"]
 collection = db["user_inputs"]
 text_feedback_collection = db["text_feedbacks"]

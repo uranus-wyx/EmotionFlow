@@ -1,18 +1,14 @@
 ### classifier.py
-# Core Libraries
 import json
 from dotenv import load_dotenv
-
-# Third-Party Libraries
 import google.generativeai as genai
+from secret import get_credentials
 
-# App Configuration
-import config
-
+credentials = get_credentials()
 load_dotenv()
-api_key = config.GEMINI_API_KEY
+api_key = credentials['gemini_api_key']
 genai.configure(api_key = api_key)
-model = genai.GenerativeModel(model_name=config.MODEL_NAME)
+model = genai.GenerativeModel(model_name="models/gemini-2.0-flash")
 
 with open("emotions.json", "r", encoding="utf-8") as f:
     emotion_categories = json.load(f)

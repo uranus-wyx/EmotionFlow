@@ -1,24 +1,17 @@
 ### dashboard.py
-# Core Libraries
 from collections import Counter
 import re
-
-# Data Analysis and Visualization
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.graph_objs as go
-
-# Dash Web Framework
 from dash import Dash, dcc, html
 import dash_bootstrap_components as dbc
-
-# Database
 from pymongo import MongoClient
+from secret import get_credentials
 
-# App Configuration
-from config import MONGODB_URI
-
-mongo_client = MongoClient(MONGODB_URI)
+credentials = get_credentials()
+mongo_db_key = credentials['mongo_db_key']
+mongo_client = MongoClient(mongo_db_key)
 db = mongo_client["emotion_platform"]
 text_feedback_collection = db["text_feedbacks"]
 music_feedback_collection = db["music_feedbacks"]
