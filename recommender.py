@@ -1,14 +1,17 @@
-# recommender.py
-import google.generativeai as genai
+### recommender.py
+# Core Libraries
 from dotenv import load_dotenv
 
-load_dotenv()
-api_key = 'AIzaSyBpFbBbEwSA7H0up-Hoa9ky9sLWWn6NmAU'
-genai.configure(api_key = api_key)
-model = genai.GenerativeModel(model_name="models/gemini-2.0-flash")
+# Third-Party Libraries
+import google.generativeai as genai
 
-client_id = 'd3bb3143abed4ddea34191cea72c0b46'
-client_secret = '174b41640e5641da90be6a65c40f2e52'
+# App Configuration
+import config
+
+load_dotenv()
+api_key = config.GEMINI_API_KEY
+genai.configure(api_key = api_key)
+model = genai.GenerativeModel(model_name=config.MODEL_NAME)
 
 def generate_music_recommendation(user_input, emotion):
     prompt = f"""

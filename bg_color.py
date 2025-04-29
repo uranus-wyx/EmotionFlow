@@ -1,11 +1,17 @@
-import google.generativeai as genai
+### bg_color.py
+# Core Libraries
 from dotenv import load_dotenv
 
-load_dotenv()
-api_key = 'AIzaSyBpFbBbEwSA7H0up-Hoa9ky9sLWWn6NmAU'
-genai.configure(api_key = api_key)
-model = genai.GenerativeModel(model_name="models/gemini-2.0-flash")
+# Third-Party Libraries
+import google.generativeai as genai
 
+# App Configuration
+import config
+
+load_dotenv()
+api_key = config.GEMINI_API_KEY
+genai.configure(api_key = api_key)
+model = genai.GenerativeModel(model_name = config.MODEL_NAME)
 
 def generate_color(emotion = None):
 
@@ -19,4 +25,3 @@ def generate_color(emotion = None):
     color = response.text.strip()
 
     return color
-    

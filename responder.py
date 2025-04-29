@@ -1,17 +1,23 @@
-# responder_gemini.py
+### responder.py
+# Core Libraries
 import os
-import google.generativeai as genai
 from dotenv import load_dotenv
 
+# Third-Party Libraries
+import google.generativeai as genai
+
+# App Configuration
+import config
+
 load_dotenv()
-api_key = 'AIzaSyBpFbBbEwSA7H0up-Hoa9ky9sLWWn6NmAU'
+api_key = config.GEMINI_API_KEY
 genai.configure(api_key = api_key)
-model = genai.GenerativeModel(model_name="models/gemini-2.0-flash")
+model = genai.GenerativeModel(model_name=config.MODEL_NAME)
 
 def generate_response_gemini(user_input, emotion=None):
     """
-    使用 Gemini 生成共情回复。
-    emotion: 可传入先前分类得到的情绪词，帮助改善提示效果。
+    Response with empathetic by Gemini
+    emotion: input classification emotion words to improve the prompt.
     """
     # prompt
     prompt = f"""
@@ -24,6 +30,5 @@ def generate_response_gemini(user_input, emotion=None):
     Please reply with one or two sentences that show empathy and encouragement.
     """
 
-    # API
     response = model.generate_content(prompt)
     return response.text.strip()

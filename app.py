@@ -1,32 +1,38 @@
-from flask import Flask, render_template, request, jsonify, redirect, session
+### app.py
+# Core Libraries
+from datetime import datetime, timezone
+import uuid
+import json
+import urllib.parse
+
+# Flask and Web Framework
+from flask import Flask, render_template, request, jsonify, session
+
+# Database
 from pymongo import MongoClient
+
+# App Modules
 from classifier import classify_emotion_gemini
 from responder import generate_response_gemini
 from recommender import generate_music_recommendation
 from bg_color import generate_color
-from datetime import datetime, timezone
-import uuid
-import urllib.parse
-
-from dashboard import create_dashboard  # 把 dashboard import 進來
+from dashboard import create_dashboard
+from config import MONGODB_URI, SECRET_KEY
 
 app = Flask(__name__)
-app.secret_key = "super-secret-key-12345"
+app.secret_key = SECRET_KEY
 
-mongo_client = MongoClient("mongodb+srv://yuniwu:NpCOR24HEnxdnVpX@cluster0.sdsbxna.mongodb.net/")
+mongo_client = MongoClient(MONGODB_URI)
 db = mongo_client["emotion_platform"]
 collection = db["user_inputs"]
 text_feedback_collection = db["text_feedbacks"]
 music_feedback_collection = db["music_feedbacks"]
 
-# 這邊整合Dash到Flask
 dash_app = create_dashboard(app)
 
 @app.route('/')
 def home():
     return render_template("index.html")
-
-# --------- 以下你的其他 Flask API 都保留不用改 ---------
 
 @app.route("/submit", methods=["POST"])
 def submit():

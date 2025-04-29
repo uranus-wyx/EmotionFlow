@@ -1,17 +1,29 @@
 ### dashboard.py
-from dash import Dash, dcc, html
-import dash_bootstrap_components as dbc
-import plotly.graph_objs as go
-from pymongo import MongoClient
-import pandas as pd
+# Core Libraries
 from collections import Counter
 import re
+
+# Data Analysis and Visualization
+import pandas as pd
 import matplotlib.pyplot as plt
+import plotly.graph_objs as go
+
+# Dash Web Framework
+from dash import Dash, dcc, html
+import dash_bootstrap_components as dbc
+
+# Database
+from pymongo import MongoClient
+
+# App Configuration
+from config import MONGODB_URI
+
+mongo_client = MongoClient(MONGODB_URI)
+db = mongo_client["emotion_platform"]
+text_feedback_collection = db["text_feedbacks"]
+music_feedback_collection = db["music_feedbacks"]
 
 def fetch_text_feedback_data():
-    mongo_client = MongoClient("mongodb+srv://yuniwu:NpCOR24HEnxdnVpX@cluster0.sdsbxna.mongodb.net/")
-    db = mongo_client["emotion_platform"]
-    text_feedback_collection = db["text_feedbacks"]
     cursor = text_feedback_collection.find()
     data = list(cursor)
     if not data:
@@ -30,9 +42,6 @@ def fetch_text_feedback_data():
     return df
 
 def fetch_music_feedback_data():
-    mongo_client = MongoClient("mongodb+srv://yuniwu:NpCOR24HEnxdnVpX@cluster0.sdsbxna.mongodb.net/")
-    db = mongo_client["emotion_platform"]
-    music_feedback_collection = db["music_feedbacks"]
     cursor = music_feedback_collection.find()
     data = list(cursor)
     if not data:
@@ -48,6 +57,22 @@ def fetch_music_feedback_data():
 
     df = pd.DataFrame(processed_data)
     return df
+
+def fetch_emotion_distribution():
+    cursor = text_feedback_collection.find()
+    emotions = [
+        re.sub(r'[^a-zA-Z\s]', '', d['text_feedback']['emotion']).strip()
+        for d in cursor if 'text_feedback' in d and 'emotion' in d['text_feedback']
+    ]
+    emotion_counts = Counter(emotions)
+    return dict(emotion_counts)
+
+def generate_color_palette(emotions):
+    cmap = plt.get_cmap("tab20")
+    return {emotion: f"rgb{tuple([int(c*255) for c in cmap(i % 20)[:3]])}" for i, emotion in enumerate(emotions)}
+
+emotion_counts = fetch_text_feedback_data()['emotion'].value_counts().to_dict()
+emotion_color_map = generate_color_palette(list(emotion_counts.keys()))
 
 def create_dashboard(flask_app):
     dash_app = Dash(
@@ -80,8 +105,8 @@ def create_dashboard(flask_app):
                                 go.Bar(
                                     x=['👍 Liked', '👎 Disliked'],
                                     y=[
-                                        text_feedback_df['liked'].sum(),
-                                        (~text_feedback_df['liked']).sum()
+                                        sum(1 for d in text_feedback_df.to_dict('records') if d['liked'] is True),
+                                        sum(1 for d in text_feedback_df.to_dict('records') if d['liked'] is False)
                                     ],
                                     marker_color=['#00ffc6', '#ff5e78']
                                 )
@@ -107,8 +132,8 @@ def create_dashboard(flask_app):
                                 go.Bar(
                                     x=['👍 Liked', '👎 Disliked'],
                                     y=[
-                                        music_feedback_df['liked'].sum(),
-                                        (~music_feedback_df['liked']).sum()
+                                        sum(1 for d in music_feedback_df.to_dict('records') if d['liked'] is True),
+                                        sum(1 for d in music_feedback_df.to_dict('records') if d['liked'] is False)
                                     ],
                                     marker_color=['#b0ff8e', '#ffa474']
                                 )
@@ -123,7 +148,56 @@ def create_dashboard(flask_app):
                     )
                 ], className="p-3 shadow rounded bg-dark")
             ], md=6),
+        ], className="mb-4"),
+
+        dbc.Row([
+            dbc.Col([
+                html.H4("Emotion Distribution", style={"color": "#00e3ff"}),
+                dcc.Graph(
+                    id='emotion-distribution',
+                    figure={
+                        'data': [
+                            go.Bar(
+                                x=list(fetch_emotion_distribution().keys()),
+                                y=list(fetch_emotion_distribution().values()),
+                                marker_color=[emotion_color_map.get(emotion, 'gray') for emotion in emotion_counts.keys()]
+                            )
+                        ],
+                        'layout': go.Layout(
+                            title='Detected Emotion Frequency',
+                            xaxis={'title': 'Emotion'},
+                            yaxis={'title': 'Count'},
+                            plot_bgcolor='#1e1e2f',
+                            paper_bgcolor='#1e1e2f',
+                            font={"color": "#e0e0e0", "family": "Orbitron"}
+                        )
+                    }
+                )
+            ], md=12)
         ]),
-    ], fluid=True)
+
+        html.Hr(),
+
+        html.Div([
+            html.H4("Reward Score Simulation", className="text-warning"),
+            html.P("Use the slider below to simulate a reward score based on feedback intensity."),
+            dcc.Slider(
+                id='feedback-slider',
+                min=0,
+                max=10,
+                step=1,
+                value=5,
+                marks={i: str(i) for i in range(11)}
+            ),
+            html.Div(id='reward-output', className='mt-3 lead text-center', style={"color": "#fcd34d", "fontFamily": "Orbitron"})
+        ], className="p-4 bg-dark rounded shadow-sm")
+
+    ], fluid=True, style={
+        'backgroundColor': '#121212',
+        'fontFamily': "Orbitron, sans-serif",
+        'paddingTop': '0px',
+        'paddingBottom': '0px',
+        'margin': '0px'
+    })
 
     return dash_app
