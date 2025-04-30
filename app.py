@@ -16,7 +16,12 @@ from secret import get_secret
 app = Flask(__name__)
 app.secret_key = "super-secret-key-12345"
 
-mongo_uri = get_secret("MONGODB_URI")
+GEMINI_API_KEY = "AIzaSyBpFbBbEwSA7H0up-Hoa9ky9sLWWn6NmAU"
+MONGODB_URI = "mongodb+srv://yuniwu:NpCOR24HEnxdnVpX@cluster0.sdsbxna.mongodb.net/"
+
+# mongo_uri = get_secret("MONGODB_URI")
+mongo_uri = MONGODB_URI
+
 mongo_client = MongoClient(mongo_uri)
 db = mongo_client["emotion_platform"]
 collection = db["user_inputs"]
