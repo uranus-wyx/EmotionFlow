@@ -2,7 +2,7 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  # Step 1: Build the image
+  # Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build',
@@ -10,14 +10,14 @@ steps:
       '.'
     ]
 
-  # Step 2: Push the image
+  # Push image
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'push',
       'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/emotionflow:$SHORT_SHA'
     ]
 
-  # Step 3: Deploy to Cloud Run
+  # Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args: [
