@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 import uuid
 import json
 import urllib.parse
+import os
 from flask import Flask, render_template, request, jsonify, session
 from pymongo import MongoClient
 from classifier import classify_emotion_gemini
@@ -10,15 +11,13 @@ from responder import generate_response_gemini
 from recommender import generate_music_recommendation
 from bg_color import generate_color
 from dashboard import create_dashboard
-from secret import get_credentials
+from secret import get_secret
 
 app = Flask(__name__)
 app.secret_key = "super-secret-key-12345"
 
-credentials = get_credentials()
-mongo_db_key = credentials['mongo_db_key']
-
-mongo_client = MongoClient(mongo_db_key)
+mongo_uri = get_secret("MONGODB_URI")
+mongo_client = MongoClient(mongo_uri)
 db = mongo_client["emotion_platform"]
 collection = db["user_inputs"]
 text_feedback_collection = db["text_feedbacks"]

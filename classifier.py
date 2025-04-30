@@ -2,11 +2,11 @@
 import json
 from dotenv import load_dotenv
 import google.generativeai as genai
-from secret import get_credentials
+from secret import get_secret
 
-credentials = get_credentials()
 load_dotenv()
-api_key = credentials['gemini_api_key']
+gemini_api_key = get_secret("GEMINI_API_KEY")
+api_key = gemini_api_key
 genai.configure(api_key = api_key)
 model = genai.GenerativeModel(model_name="models/gemini-2.0-flash")
 

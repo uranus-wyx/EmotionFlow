@@ -1,63 +1,23 @@
 from google.cloud import secretmanager
-from google.oauth2 import service_account
+import google.auth
 import json
 import os
 from dotenv import load_dotenv
 
+def get_secret(secret_id: str, version: str = "latest") -> str:
+    # 從環境變數或 metadata 中取得 GCP 專案 ID
+    project_id = os.getenv("GCP_PROJECT") or os.getenv("GOOGLE_CLOUD_PROJECT")
+    if not project_id:
+        raise RuntimeError("GCP project ID not found in environment variables.")
 
-def get_secret_value(secret_name: str, project_id: str, secret_version: str = "latest", key_path: str = '/path/to/your/service-account-file.json'):
-    """
-    Fetches the secret value from Google Cloud Secret Manager.
+    # 建立 Secret Manager 客戶端
+    client = secretmanager.SecretManagerServiceClient()
 
-    :param secret_name: The name of the secret in Secret Manager
-    :param project_id: Your Google Cloud project ID
-    :param secret_version: The version of the secret to fetch (default is "latest")
-    :param key_path: The path to your service account JSON credentials file
-    :return: The value of the secret as a string
-    """
-    # Load the service account credentials
-    credentials = service_account.Credentials.from_service_account_file("/secrets/credentials/emotion-flow-credentials")
+    # 建立 Secret 路徑：projects/{project_id}/secrets/{secret_id}/versions/{version}
+    secret_name = f"projects/{project_id}/secrets/{secret_id}/versions/{version}"
 
-    # Create the Secret Manager client
-    client = secretmanager.SecretManagerServiceClient(credentials=credentials)
+    # 存取 Secret 版本
+    response = client.access_secret_version(name=secret_name)
 
-    # Construct the secret path
-    secret_path = f"projects/{project_id}/secrets/{secret_name}/versions/{secret_version}"
-
-    # Access the secret version
-    response = client.access_secret_version(request={"name": secret_path})
-
-    # Decode and return the secret value
-    secret_value = response.payload.data.decode("UTF-8")
-    return secret_value
-
-def get_credentials():
-    """
-    Fetches the MongoDB and Gemini API keys from Google Cloud Secret Manager.
-    
-    :return: A dictionary containing MongoDB and Gemini API keys
-    """
-    # Your Google Cloud project ID
-    # project_id = 'the-mesh-458219-a9'
-
-    # Path to your service account JSON file
-    # key_path = '/tmp/credentials.json'
-
-    load_dotenv()
-    mongo_secret_value = os.getenv("MONGODB_URI")
-    gemini_secret_value = os.getenv("GEMINI_API_KEY")
-
-
-    # Fetch MongoDB key
-    # mongo_secret_name = 'MONGODB_URI'
-    # mongo_secret_value = get_secret_value(mongo_secret_name, project_id, key_path=key_path)
-
-    # Fetch Gemini API key
-    # gemini_secret_name = 'GEMINI_API_KEY'
-    # gemini_secret_value = get_secret_value(gemini_secret_name, project_id, key_path=key_path)
-
-    # Return the keys as a dictionary
-    return {
-        "mongo_db_key": mongo_secret_value,
-        "gemini_api_key": gemini_secret_value
-    }
+    # 回傳 Secret 的值（以 UTF-8 解碼）
+    return response.payload.data.decode("UTF-8")
