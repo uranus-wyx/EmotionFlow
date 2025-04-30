@@ -2,59 +2,34 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  # Step 1: Build the Dashboard service
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'build',
-      '-t', 'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/dashboard:$SHORT_SHA',
-      '.'
-    ]
-    dir: './dashboard'  # 假設 dashboard 服務有自己的目錄
+# 1. 用 Dockerfile 构建镜像
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '-t'
+    - 'gcr.io/$PROJECT_ID/emotionflow:$SHORT_SHA'
+    - '.'
 
-  # Step 2: Build the API service
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'build',
-      '-t', 'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/api:$SHORT_SHA',
-      '.'
-    ]
-    dir: './api'  # 假設 api 服務有自己的目錄
+# 2. Push 镜像到 Google Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'push'
+    - 'gcr.io/$PROJECT_ID/emotionflow:$SHORT_SHA'
 
-  # Step 3: Push the images to Google Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'push',
-      'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/dashboard:$SHORT_SHA'
-    ]
-
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'push',
-      'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/api:$SHORT_SHA'
-    ]
-
-  # Step 4: Deploy to Google Cloud Run (Dashboard)
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args: [
-      'run', 'deploy', 'dashboard',
-      '--image', 'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/dashboard:$SHORT_SHA',
-      '--region', 'us-central1',
-      '--platform', 'managed',
-      '--allow-unauthenticated'
-    ]
-
-  # Step 5: Deploy to Google Cloud Run (API)
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args: [
-      'run', 'deploy', 'api',
-      '--image', 'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/api:$SHORT_SHA',
-      '--region', 'us-central1',
-      '--platform', 'managed',
-      '--allow-unauthenticated'
-    ]
+# 3. 部署到 Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'emotionflow'
+    - '--image'
+    - 'gcr.io/$PROJECT_ID/emotionflow:$SHORT_SHA'
+    - '--region'
+    - 'us-central1'
+    - '--platform'
+    - 'managed'
+    - '--allow-unauthenticated'
 
 images:
-  - 'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/dashboard:$SHORT_SHA'
-  - 'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/api:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/emotionflow:$SHORT_SHA'
