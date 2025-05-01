@@ -5,7 +5,6 @@ import os
 from dotenv import load_dotenv
 
 def get_secret(secret_id: str, version: str = "latest") -> str:
-    # 從環境變數或 metadata 中取得 GCP 專案 ID
     # project_id = os.getenv("GCP_PROJECT") or os.getenv("GOOGLE_CLOUD_PROJECT")
     project_id = "the-mesh-458219-a9"
     if not project_id:
