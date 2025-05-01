@@ -16,16 +16,11 @@ from secret import get_secret
 app = Flask(__name__)
 app.secret_key = "super-secret-key-12345"
 
-# GEMINI_API_KEY = "AIzaSyBpFbBbEwSA7H0up-Hoa9ky9sLWWn6NmAU"
-# MONGODB_URI = "mongodb+srv://yuniwu:NpCOR24HEnxdnVpX@cluster0.sdsbxna.mongodb.net/"
-
 try:
     mongo_uri = get_secret("MONGODB_URI")
 except Exception as e:
     print(f"[ERROR] Failed to retrieve secret: {e}")
     mongo_uri = None
-# mongo_uri = MONGODB_URI
-
 if not mongo_uri:
     raise RuntimeError("Mongo URI not configured, app will not start.")
 

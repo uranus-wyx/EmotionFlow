@@ -3,12 +3,8 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 from secret import get_secret
 
-GEMINI_API_KEY = "AIzaSyBpFbBbEwSA7H0up-Hoa9ky9sLWWn6NmAU"
-MONGODB_URI = "mongodb+srv://yuniwu:NpCOR24HEnxdnVpX@cluster0.sdsbxna.mongodb.net/"
-
 load_dotenv()
-# gemini_api_key = get_secret("GEMINI_API_KEY")
-gemini_api_key = GEMINI_API_KEY
+gemini_api_key = get_secret("GEMINI_API_KEY")
 
 api_key = gemini_api_key
 genai.configure(api_key = api_key)
