@@ -13,7 +13,7 @@ def get_secret(secret_id: str, version: str = "latest") -> str:
     # 建立 Secret Manager 客戶端
     client = secretmanager.SecretManagerServiceClient()
 
-    # 建立 Secret 路徑：projects/{project_id}/secrets/{secret_id}/versions/{version}
+    # 建立 Secret path：projects/{project_id}/secrets/{secret_id}/versions/{version}
     secret_name = f"projects/{project_id}/secrets/{secret_id}/versions/{version}"
 
     # 存取 Secret 版本
