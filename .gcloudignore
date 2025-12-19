@@ -1,0 +1,78 @@
+# Use .gcloudignore file to specify files and directories to ignore when uploading
+# your code to Google Cloud Build and Google Cloud Run.
+
+# -----------------------------------
+# Python environment and caches
+# -----------------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+*.egg-info/
+dist/
+build/
+
+# -----------------------------------
+# Virtual environments
+# -----------------------------------
+venv/
+.venv/
+env/
+ENV/
+
+# -----------------------------------
+# Sensitive / Credential files
+# -----------------------------------
+.env
+*.env
+credentials.json
+token.json
+*.json
+
+# allow cloudbuild.yaml even though *.json ignored above
+!cloudbuild.yaml
+
+# -----------------------------------
+# macOS system junk
+# -----------------------------------
+.DS_Store
+*/.DS_Store
+
+# -----------------------------------
+# IDE/editor configurations
+# -----------------------------------
+.vscode/
+.idea/
+
+# -----------------------------------
+# Logs & temporary files
+# -----------------------------------
+*.log
+*.tmp
+*.bak
+*.swp
+
+# -----------------------------------
+# Flask / application runtime dirs
+# -----------------------------------
+instance/
+*.db
+*.sqlite3
+
+# -----------------------------------
+# Static folders
+# -----------------------------------
+static/.DS_Store
+static/__pycache__/
+
+# -----------------------------------
+# Node (if you add frontend later)
+# -----------------------------------
+node_modules/
+
+# -----------------------------------
+# Docker build artifacts
+# -----------------------------------
+.cache/
+Dockerfile~
