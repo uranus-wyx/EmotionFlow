@@ -1,4 +1,66 @@
-credentials.json
+# -----------------------------
+# Python cache & build files
+# -----------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.pkl
+*.egg-info/
+dist/
+build/
+
+# -----------------------------
+# Environment & credentials
+# -----------------------------
 .env
+*.env
+venv/
+.venv/
+env/
+ENV/
+credentials.json
+token.json
+
+# -----------------------------
+# macOS system files
+# -----------------------------
 .DS_Store
+*/.DS_Store
+
+# -----------------------------
+# IDE/editor files
+# -----------------------------
+.vscode/
+.idea/
+
+# -----------------------------
+# Flask / Temp / Logs
+# -----------------------------
+instance/
+*.log
+*.sqlite3
+*.db
+
+# -----------------------------
+# Cloud / Docker / Deployment
+# -----------------------------
+# do not upload large docker build caches or artifacts
+.cache/
+*.bak
+*.tmp
+
+# Google Cloud credentials (local only)
+*.json
+!cloudbuild.yaml
+!Dockerfile
+
+# -----------------------------
+# Static-generated files
+# -----------------------------
 static/.DS_Store
+static/__pycache__/
+
+# Node (if any front-end added later)
+node_modules/

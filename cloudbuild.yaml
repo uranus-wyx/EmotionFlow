@@ -2,31 +2,28 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  # Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build',
-      '-t', 'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/emotionflow:$SHORT_SHA',
+      '-t', 'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/emotionflow:latest',
       '.'
     ]
 
-  # Push image
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'push',
-      'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/emotionflow:$SHORT_SHA'
+      'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/emotionflow:latest'
     ]
 
-  # Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args: [
       'run', 'deploy', 'emotionflow',
-      '--image', 'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/emotionflow:$SHORT_SHA',
+      '--image', 'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/emotionflow:latest',
       '--region', 'us-central1',
       '--platform', 'managed',
       '--allow-unauthenticated'
     ]
 
 images:
-  - 'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/emotionflow:$SHORT_SHA'
+  - 'us-central1-docker.pkg.dev/the-mesh-458219-a9/emotionflow/emotionflow:latest'

@@ -4,13 +4,18 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 from secret import get_secret
 from google.api_core.exceptions import ResourceExhausted, GoogleAPIError
+import openai
+from openai import OpenAI
+from openai import APIError, RateLimitError
 
 load_dotenv()
-gemini_api_key = get_secret("GEMINI_API_KEY")
+# gemini_api_key = get_secret("GEMINI_API_KEY")
+openai_api_key = get_secret("OPENAI_API_KEY")
 
-api_key = gemini_api_key
-genai.configure(api_key = api_key)
-model = genai.GenerativeModel(model_name="models/gemini-2.0-flash")
+api_key = openai_api_key
+client = OpenAI(api_key=openai_api_key)
+# genai.configure(api_key = api_key)
+# model = genai.GenerativeModel(model_name="models/gemini-2.0-flash")
 
 with open("emotions.json", "r", encoding="utf-8") as f:
     emotion_categories = json.load(f)
@@ -38,36 +43,48 @@ def classify_emotion_gemini(user_input):
     """
 
     try:
-        response = model.generate_content(prompt)
-        emotion = response.text.strip()
-        category = get_emotion_category(emotion)
+        # response = model.generate_content(prompt)
+        # emotion = response.text.strip()
+        # category = get_emotion_category(emotion)
+
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": user_input},
+            ],
+            temperature=0.2,
+        )
+
+        # Extract output text
+        output = response.choices[0].message.content.strip()
+
+        # Determine category
+        category = get_emotion_category(output)
 
         return {
             "ok": True,
-            "emotion": emotion,
+            "emotion": output,
             "category": category
         }
 
-    except ResourceExhausted as e:
-        # 偵測到 Gemini 配額/速率限制用完
-        print(f"[ERROR] Gemini quota exceeded: {e}")
+    except RateLimitError as e:
+        print(f"[ERROR] OpenAI rate limit: {e}")
         return {
             "ok": False,
             "error_type": "quota",
-            "message": "The emotion analysis service has exceeded its quota. Please try again later."
+            "message": "OpenAI rate limit exceeded. Please try again later."
         }
 
-    except GoogleAPIError as e:
-        # Google API（Gemini）其他錯誤
-        print(f"[ERROR] Gemini API error: {e}")
+    except APIError as e:
+        print(f"[ERROR] OpenAI API error: {e}")
         return {
             "ok": False,
             "error_type": "api",
-            "message": "A Gemini API error occurred. Please try again later."
+            "message": "OpenAI API error occurred. Please try again later."
         }
 
     except Exception as e:
-        # 捕捉所有未知錯誤，避免 500
         print(f"[ERROR] Unexpected error: {e}")
         return {
             "ok": False,

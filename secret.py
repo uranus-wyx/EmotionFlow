@@ -4,22 +4,40 @@ import json
 import os
 from dotenv import load_dotenv
 
-def get_secret(secret_id: str, version: str = "latest") -> str:
-    project_id = os.getenv("GCP_PROJECT") or os.getenv("GOOGLE_CLOUD_PROJECT")
-    if not project_id:
-        raise RuntimeError("GCP project ID not found in environment variables.")
-    # project_id = "the-mesh-458219-a9"
-    if not project_id:
-        raise RuntimeError("GCP project ID not found in environment variables.")
+def get_secret(name: str, version: str = "latest") -> str:
+    """
+    Universal secret loader:
+    1. LOCAL (no GCP credentials): read from environment variable.
+    2. CLOUD RUN / GCP: read from Secret Manager if project ID exists.
+    """
 
-    # 建立 Secret Manager 客戶端
+    # 1️⃣ LOCAL：優先使用環境變數
+    env_value = os.environ.get(name)
+    if env_value:
+        return env_value
+
+    # 2️⃣ CLOUD：需要 GCP project + Secret Manager
+    project_id = (
+        os.environ.get("GCP_PROJECT")
+        or os.environ.get("GOOGLE_CLOUD_PROJECT")
+        or os.environ.get("GCLOUD_PROJECT")
+    )
+
+    # 若沒有 project_id → 無法讀 Secret Manager
+    if not project_id:
+        raise RuntimeError(
+            f"Environment variable '{name}' not found, and no GCP project ID available. "
+            "Set the environment variable when running locally."
+        )
+
+    # 若沒有 secretmanager 客戶端 → 無法讀 Secret Manager
+    if secretmanager is None:
+        raise RuntimeError(
+            f"Secret Manager client unavailable, and environment variable '{name}' not set."
+        )
+
+    # 3️⃣ 讀 Secret Manager
     client = secretmanager.SecretManagerServiceClient()
-
-    # 建立 Secret path：projects/{project_id}/secrets/{secret_id}/versions/{version}
-    secret_name = f"projects/{project_id}/secrets/{secret_id}/versions/{version}"
-
-    # 存取 Secret 版本
-    response = client.access_secret_version(name=secret_name)
-
-    # 回傳 Secret 的值（以 UTF-8 解碼）
+    secret_path = f"projects/{project_id}/secrets/{name}/versions/{version}"
+    response = client.access_secret_version(name=secret_path)
     return response.payload.data.decode("UTF-8")
