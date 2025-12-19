@@ -28,7 +28,6 @@ ENV/
 *.env
 credentials.json
 token.json
-*.json
 
 # allow cloudbuild.yaml even though *.json ignored above
 !cloudbuild.yaml
