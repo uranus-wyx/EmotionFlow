@@ -51,12 +51,29 @@ def submit():
 
 @app.route("/predict", methods=["POST"])
 def predict_emotions():
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     user_input = data.get("text")
+
     if not user_input:
-        return jsonify({"error": "Missing 'text' in request body"}), 400
+        return jsonify({"ok": False, "error": "Missing 'text' in request body"}), 400
+
     result = classify_emotion_gemini(user_input)
-    return jsonify(result)
+
+    # 如果 classify_emotion_gemini 出錯，就根據 error_type 回傳不同狀態碼
+    if not result.get("ok", True):
+        error_type = result.get("error_type")
+
+        if error_type == "quota":
+            status_code = 429  # Too Many Requests / Quota exceeded
+        elif error_type == "api":
+            status_code = 503  # Service Unavailable
+        else:
+            status_code = 500  # Unexpected server error
+
+        return jsonify(result), status_code
+
+    return jsonify(result), 200
+
 
 @app.route("/api/respond", methods=["POST"])
 def generate_response():
